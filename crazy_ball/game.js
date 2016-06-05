@@ -3,6 +3,8 @@ var canvas = null;
 var bar = null;
 var up = false;
 var left = false;
+const t_block = 20;
+var count = 20;
 
 function mouse_event(evt){
 	bar.x = evt.clientX - bar.w/2;
@@ -24,15 +26,17 @@ function clear(c){
 
 function draw(c, obj){
 	clear(c);
-	var blk = obj.block;
 
 	c.fillStyle = "#000aaf";
 	c.fillRect(obj.bar.x, obj.bar.y, obj.bar.w, obj.bar.h);
 	c.fillStyle = "#f02222";
 	c.fillRect(obj.ball.x, obj.ball.y, obj.ball.r, obj.ball.r);
-	if(blk.exist){
-		c.fillStyle = "#a206a2";
-		c.fillRect(blk.x, blk.y, blk.w, blk.h);
+	for(var x=0;x<t_block;x+=1){
+		var blk = obj.block[x];
+		if(blk.exist){
+			c.fillStyle = "#a206a2";
+			c.fillRect(blk.x, blk.y, blk.w, blk.h);
+		}
 	}
 }
 
@@ -41,7 +45,9 @@ function game_play(c){
 	var inter = null;
 	obj['bar'] = {w:256,h:32,x:canvas.width/2-256/2,y:canvas.height-64};
 	obj['ball'] = {r:16, x: canvas.width/2-8, y: canvas.height/2-8, w:16, h:16};
-	obj['block'] = {x:canvas.width/2-64/2-260,y:canvas.height/2-64, w:64, h:24, exist: true};
+	obj['block'] = [];//{x:canvas.width/2-64/2-260,y:canvas.height/2-64, w:64, h:24, exist: true};
+	for(var x=0;x<t_block; x+=1)
+		obj.block.push({x:canvas.width/10*(x%10),y:64*(x%3)+16,w:64,h:24,exist:true});
 	bar = obj.bar;
 
 	function c_draw(){
@@ -62,15 +68,17 @@ function game_play(c){
 			up = false;
 		if(ball.x+ball.r >= canvas.width || ball.x <= 0)
 			left = !left;
-		if(colide(ball, obj.block)){
-			obj.block.exist = false;
-			up = !up;
-			left = !left;
-		}
+		for(var x=0;x<t_block;x++)
+			if(obj.block[x].exist && colide(ball, obj.block[x])){
+				obj.block[x].exist = false;
+				up = !up;
+				left = !left;
+				count-=1;
+			}
 
 		draw(c, obj);
 
-		if(!obj.block.exist){
+		if(count == 0){
 			alert('Game Over!');
 			clearInterval(inter);
 		}
