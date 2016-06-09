@@ -49,25 +49,25 @@ function __collision__(obj1, obj2){
 		var zero = obj1.x+obj1.width-obj2.x;
 		var valu = obj2.x+obj2.width-obj2.x+obj1.width;
 		var perc = zero*100/valu;
-		return [COLISION_TOP, perc];
+		return [COLLISION_TOP, perc];
 	}/*else TODO HACK
 	if(obj1.y <= obj2.y+obj2.height){ // Bottom Colision
 		var zero = obj1.x+obj1.width-obj2.x;
 		var valu = obj2.x+obj2.width;
 		var perc = zero*100/valu;
-		return [COLISION_BOTTOM, perc];
+		return [COLLISION_BOTTOM, perc];
 	}else
 	if(obj1.x + obj1.width >= obj2.x){ // Left Colision
 		var zero = obj1.y+obj1.height-obj2.y;
 		var valu = obj2.y+obj2.height;
 		var perc = zero*100/valu;
-		return [COLISION_LEFT, perc];
+		return [COLLISION_LEFT, perc];
 	}else
 	if(obj1.x <= obj2.x + obj2.width){ // Right Colision
 		var zero = obj1.y+obj1.height-obj2.y;
 		var valu = obj2.y+obj2.height;
 		var perc = zero*100/valu;
-		return [COLISION_RIGHT, perc];
+		return [COLLISION_RIGHT, perc];
 	}*/
 
 	return true;
@@ -94,28 +94,29 @@ function Cube(x, y,width, height, color){
 }
 
 function Hero(x,y,width, height, color){
-	this.head = new Cube(x,y,width, height*0.1, "#fbbcbc");
-	this.body = new Cube(x,y+height*0.1, width, height*0.9, color);
+	this.head = new Cube(x,y,width, height*0.2, "#fbbcbc");
+	this.body = new Cube(x,y+height*0.2, width, height*0.8, color);
 	this.x = x;
 	this.y = y;
 	this.width = width;
 	this.height = height;
 	this.show = true;
+	this.color = color;
 
 	this.step = function(){
 		head_up = {
 			x: this.x,
 			y: this.y,
 			width: this.width,
-			height: this.height*0.1,
+			height: this.height*0.2,
 			color: '#fbbcbc',
 			show: this.show,
 		};
 		body_up = {
 			x: this.x,
-			y: this.y+this.height*0.1,
+			y: this.y+this.height*0.2,
 			width: this.width,
-			height: this.height*0.9,
+			height: this.height*0.8,
 			color: this.color,
 			show: this.show,
 		};
@@ -126,6 +127,9 @@ function Hero(x,y,width, height, color){
 		__draw__(this.head);
 		__draw__(this.body);
 	}
+	this.collision = function(obj){
+		return __collision__(this, obj);
+	};
 
 	return this;
 }
